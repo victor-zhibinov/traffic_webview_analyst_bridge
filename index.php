@@ -37,12 +37,12 @@ abstract class DbSettings {
 
 
 interface IDb {
-	public function __construct( $user_id,  $package);
-	public function create_user( $count_deps, $count_regs, $count_clicks ) ;
-	public function update_user( $count_deps) ;
+  public function __construct( $user_id,  $package);
+  public function create_user( $count_deps, $count_regs, $count_clicks ) ;
+  public function update_user( $count_deps) ;
   public function update_regs( $regs_up_number );
-	public function get_count_deps() ; 
-	public function issue_user();
+  public function get_count_deps() ; 
+  public function issue_user();
   public function get_count_registrations();
   public function get_count_clicks();
 }
@@ -102,8 +102,8 @@ abstract class Database implements IDb {
   }
 
 
-	protected $_user_id;
-	protected $_package_name;
+  protected $_user_id;
+  protected $_package_name;
 }
 
 
@@ -134,12 +134,12 @@ class MysqlDatabase extends Database {
     return $count_deps; 
   }
 
-	protected function query_update_user( $user_id,  $package,  $count_deps)  {
-	  $sql = "UPDATE users SET deps = ? WHERE hash = ? AND package = ?";
+  protected function query_update_user( $user_id,  $package,  $count_deps)  {
+    $sql = "UPDATE users SET deps = ? WHERE hash = ? AND package = ?";
     $stmt= $this->_connection->prepare($sql);
     $stmt->execute([$count_deps, $user_id, $package]);
-	  return $count_deps;
-	}
+    return $count_deps;
+  }
 
   protected function query_update_regs( $user_id, $package, $regs_up_number)
   {
@@ -149,13 +149,13 @@ class MysqlDatabase extends Database {
     return $regs_up_number;
   }
 
-	protected function query_get_count_deps( $user_id,  $package)
+  protected function query_get_count_deps( $user_id,  $package)
   {
-	  $deps = $this->_connection->prepare('SELECT deps FROM users WHERE (hash = ? AND package = ?)');
+    $deps = $this->_connection->prepare('SELECT deps FROM users WHERE (hash = ? AND package = ?)');
     $result = $deps->execute([$user_id, $package]);
-	  $data = $deps->fetch();
-	  return ($data['deps'] != null) ? $data['deps'] : DONT_HAVE_DEPS;
-	} 
+    $data = $deps->fetch();
+    return ($data['deps'] != null) ? $data['deps'] : DONT_HAVE_DEPS;
+  } 
 
   protected function query_get_count_clicks($user_id, $package)
   {
@@ -179,10 +179,10 @@ class MysqlDatabase extends Database {
       $this->_countClicks = $this->query_get_count_clicks($user_id, $package);
        
     return ($this->_countClicks != DONT_HAVE_DEPS  ); 
-	}
+   }
       
   private  $_countDeps = DONT_HAVE_DEPS;
-	private $_connection;
+  private $_connection;
 }
 
 
@@ -260,10 +260,10 @@ interface ITreatingRequest {
 
 class TreatingRequest implements ITreatingRequest {
 	
-	public function __construct(array $request) 
-	{ 
-		$this->_request = $request;
-	}
+  public function __construct(array $request) 
+  { 
+     $this->_request = $request;
+  }
     
   public function processing() 
   {
@@ -346,17 +346,17 @@ define('COUNT_DEPS_TO_UP_WHEN_CREATE', 1);
 
 class Logic {
 
-	public function __construct(IRequestData &$requestData, IDb &$database ) 
-	{
-	  $this->_requestData = $requestData;
-	  $this->_database = $database;	
- 	}
+  public function __construct(IRequestData &$requestData, IDb &$database ) 
+  {
+    $this->_requestData = $requestData;
+    $this->_database = $database;	
+  }
      
   private function action_put()  
   {
     if( $this->_database->issue_user() ) 
     {
-    	$this->_database->update_user($this->_database->get_count_deps() + COUNT_DEPS_TO_UP_WHEN_UPDATE);
+      $this->_database->update_user($this->_database->get_count_deps() + COUNT_DEPS_TO_UP_WHEN_UPDATE);
       $this->_database->update_regs(1);
     }
     else 
@@ -397,7 +397,7 @@ class Logic {
 
   private function action_get() 
   {
-      return $this->_database->get_count_deps();
+    return $this->_database->get_count_deps();
   }
 
   public function start() 
